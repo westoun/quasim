@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import math
+import cmath
 import numpy as np
 
 from .gate import Gate
@@ -20,10 +20,7 @@ class CRZ(Gate):
 
     def _create_matrix(self) -> np.ndarray:
         base_matrix = np.array(
-            [
-                [math.cos(self.theta / 2), -1j * math.sin(self.theta / 2)],
-                [-1j * math.sin(self.theta / 2), math.cos(self.theta / 2)],
-            ],
+            [[cmath.exp(-1j * self.theta / 2), 0], [0, cmath.exp(1j * self.theta / 2)]],
             dtype=complex,
         )
 
