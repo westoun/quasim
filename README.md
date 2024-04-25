@@ -1,1 +1,1 @@
-# Quantum Simulator for Populations (QuaSiPop)
+# Quantum Simulator for Populations (QuaSimP)
