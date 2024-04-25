@@ -1,4 +1,4 @@
 from .gate import Gate
 from .h import H
-from .cnot import CNot
+from .cx import CX
 from .x import X

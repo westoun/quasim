@@ -8,7 +8,7 @@ from .utils import create_controlled_matrix
 BASE_MATRIX = np.array([[0, 1], [1, 0]], dtype=complex)
 
 
-class CNot(Gate):
+class CX(Gate):
     qubit_num: int
     control_qubit: int
     target_qubit: int
@@ -26,4 +26,4 @@ class CNot(Gate):
         )
 
     def _create_repr(self) -> str:
-        return f"CNot{self.qubit_num}(control_qubit={self.control_qubit},target_qubit={self.target_qubit})"
+        return f"CX{self.qubit_num}(control_qubit={self.control_qubit},target_qubit={self.target_qubit})"

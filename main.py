@@ -2,13 +2,13 @@
 
 
 from quasimp import QuaSimP, Circuit
-from quasimp.gates import H, CNot, X
+from quasimp.gates import H, CX, X
 
 
 if __name__ == "__main__":
     circuit = Circuit(3)
     circuit.apply(H(0))
-    circuit.apply(CNot(0, 1))
+    circuit.apply(CX(0, 1))
 
     simulator = QuaSimP()
     simulator.evaluate_circuit(circuit)
