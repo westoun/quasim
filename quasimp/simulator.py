@@ -18,10 +18,11 @@ class QuaSimP:
         self._gate_frequency_dict = {}
         self._ngram_frequency_dict = {}
 
-        pass
+        raise NotImplementedError()
 
     def evaluate(self, circuits: List[Circuit]) -> None:
-        raise NotImplementedError()
+        for circuit in circuits:
+            self.evaluate_circuit(circuit)
 
     def evaluate_circuit(self, circuit: Circuit) -> None:
         if circuit.state is not None:
