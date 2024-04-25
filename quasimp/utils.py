@@ -31,7 +31,7 @@ def probability_dict_from_state(state: np.ndarray) -> np.ndarray:
 
         state: str = ""
 
-        for j in range(qubit_num):
+        for j in reversed(range(qubit_num)):
             if i % (2 ** (j + 1)) == 0:
                 state += "0"
             else:
