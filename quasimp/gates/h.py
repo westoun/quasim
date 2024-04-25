@@ -5,7 +5,7 @@ import numpy as np
 from .gate import Gate
 from .utils import create_identity, create_matrix
 
-BASE_MATRIX = 1.0 / (2.0**0.5) * np.array([[1, 1], [1, -1]], dtype=complex)
+BASE_MATRIX = 1.0 / (2.0**0.5) * np.array([[1, 1], [1, -1]], dtype=np.complex128)
 
 
 class H(Gate):

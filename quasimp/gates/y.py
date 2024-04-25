@@ -5,7 +5,7 @@ import numpy as np
 from .gate import Gate
 from .utils import create_matrix
 
-BASE_MATRIX = np.array([[0, -1j], [1j, 0]], dtype=complex)
+BASE_MATRIX = np.array([[0, -1j], [1j, 0]], dtype=np.complex128)
 
 
 class Y(Gate):
