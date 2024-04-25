@@ -19,11 +19,7 @@ class RZ(Gate):
     def _create_matrix(self) -> np.ndarray:
         base_matrix = np.array(
             [[cmath.exp(-1j * self.theta / 2), 0], [0, cmath.exp(1j * self.theta / 2)]],
-<<<<<<< HEAD
             dtype=np.complex128,
-=======
-            dtype=np.np.complex128128,
->>>>>>> 14d0026108ac068b209e4c4dc48e239897d4da72
         )
 
         return create_matrix(
