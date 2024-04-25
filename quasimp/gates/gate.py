@@ -40,3 +40,6 @@ class Gate(ABC):
 
     @abstractmethod
     def _create_repr(self) -> str: ...
+
+    def __str__(self) -> str:
+        return self.__repr__()

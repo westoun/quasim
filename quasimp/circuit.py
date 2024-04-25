@@ -8,7 +8,7 @@ from .utils import probabilities_from_state, probability_dict_from_state
 
 
 class Circuit:
-    gates: List[Gate] = []
+    gates: List[Gate]
     qubit_num: int
 
     _state: np.ndarray = None
@@ -16,6 +16,8 @@ class Circuit:
     _probability_dict: Dict = None
 
     def __init__(self, qubit_num: int) -> None:
+        self.gates = []
+
         self.qubit_num = qubit_num
 
     def apply(self, gate: Gate) -> None:
@@ -52,3 +54,6 @@ class Circuit:
         else:
             self._probability_dict = probability_dict_from_state(self.state)
             return self._probability_dict
+
+    def __repr__(self) -> str:
+        return f"[{','.join([str(gate) for gate in self.gates])}]"
