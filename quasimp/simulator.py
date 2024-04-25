@@ -27,7 +27,7 @@ class QuaSimP:
         if circuit.state is not None:
             return circuit.state
 
-        state = np.zeros(2**circuit.qubit_num, dtype=complex)
+        state = np.zeros(2**circuit.qubit_num, dtype=np.complex128)
         state[0] = 1
 
         for gate in circuit.gates:

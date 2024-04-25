@@ -11,7 +11,7 @@ def probabilities_from_state(state: np.ndarray) -> np.ndarray:
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
 
-        # Ignore "ComplexWarning: Casting complex values to real discards the imaginary part"
+        # Ignore "np.complex128Warning: Casting np.complex128 values to real discards the imaginary part"
         # since that is precisely what we want.
         probabilities = np.multiply(state, conjugate).astype(float)
 

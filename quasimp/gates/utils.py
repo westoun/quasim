@@ -4,7 +4,7 @@ import numpy as np
 
 
 def create_identity(dim: int = 2) -> np.ndarray:
-    return np.eye(dim, dtype=complex)
+    return np.eye(dim, dtype=np.complex128)
 
 
 def create_matrix(
@@ -29,10 +29,10 @@ def create_matrix(
 
 
 # Corresponds to |0> <0|
-PROJECTOR_0 = np.array([[1, 0], [0, 0]], dtype=complex)
+PROJECTOR_0 = np.array([[1, 0], [0, 0]], dtype=np.complex128)
 
 # Corresponds to |1> <1|
-PROJECTOR_1 = np.array([[0, 0], [0, 1]], dtype=complex)
+PROJECTOR_1 = np.array([[0, 0], [0, 1]], dtype=np.complex128)
 
 
 def create_controlled_matrix(

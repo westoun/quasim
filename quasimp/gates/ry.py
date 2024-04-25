@@ -22,7 +22,7 @@ class RY(Gate):
                 [math.cos(self.theta / 2), -1 * math.sin(self.theta / 2)],
                 [math.sin(self.theta / 2), math.cos(self.theta / 2)],
             ],
-            dtype=complex,
+            dtype=np.complex128,
         )
 
         return create_matrix(
