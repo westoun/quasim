@@ -3,6 +3,9 @@
 import numpy as np
 
 from .gate import Gate
+from .utils import create_controlled_matrix
+
+BASE_MATRIX = np.array([[0, 1], [1, 0]], dtype=complex)
 
 
 class CNot(Gate):
@@ -15,7 +18,12 @@ class CNot(Gate):
         self.target_qubit = target_qubit
 
     def _create_matrix(self) -> np.ndarray:
-        raise NotImplementedError()
+        return create_controlled_matrix(
+            BASE_MATRIX,
+            control_qubit=self.control_qubit,
+            target_qubit=self.target_qubit,
+            qubit_num=self.qubit_num,
+        )
 
     def _create_repr(self) -> str:
         return f"CNot{self.qubit_num}(control_qubit={self.control_qubit},target_qubit={self.target_qubit})"

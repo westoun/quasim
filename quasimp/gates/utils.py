@@ -26,3 +26,44 @@ def create_matrix(
         matrix = np.kron(matrix, identity_after)
 
     return matrix
+
+
+# Corresponds to |0> <0|
+PROJECTOR_0 = np.array([[1, 0], [0, 0]], dtype=complex)
+
+# Corresponds to |1> <1|
+PROJECTOR_1 = np.array([[0, 0], [0, 1]], dtype=complex)
+
+
+def create_controlled_matrix(
+    base_matrix: np.ndarray, control_qubit: int, target_qubit: int, qubit_num: int
+) -> np.ndarray:
+    # Based on https://quantumcomputing.stackexchange.com/a/4255
+    control_matrix = create_matrix(
+        PROJECTOR_0, target_qubit=control_qubit, qubit_num=qubit_num
+    )
+
+    target_matrix = None
+    for i in range(qubit_num):
+        # first matrix to be added
+        if target_matrix is None:
+            if i == control_qubit:
+                target_matrix = PROJECTOR_1
+            elif i == target_qubit:
+                target_matrix = base_matrix
+            else:
+                target_matrix = create_identity(2)
+
+        else:
+            if i == control_qubit:
+                target_matrix = np.kron(target_matrix, PROJECTOR_1)
+            elif i == target_qubit:
+                target_matrix = np.kron(target_matrix, base_matrix)
+            else:
+                target_matrix = np.kron(target_matrix, create_identity(2))
+
+    # projector matrix at position of control qubit
+    # base matrix at position of target qubit
+
+    matrix = control_matrix + target_matrix
+    return matrix
