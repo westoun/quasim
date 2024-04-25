@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 import numpy as np
-from typing import List, Union
+from typing import List, Union, Dict
 
 from .gates import Gate
-from .utils import probabilities_from_state
+from .utils import probabilities_from_state, probability_dict_from_state
 
 
 class Circuit:
@@ -13,6 +13,7 @@ class Circuit:
 
     _state: np.ndarray = None
     _probabilities: np.ndarray = None
+    _probability_dict: Dict = None
 
     def __init__(self, qubit_num: int) -> None:
         self.qubit_num = qubit_num
@@ -40,3 +41,14 @@ class Circuit:
         else:
             self._probabilities = probabilities_from_state(self.state)
             return self._probabilities
+
+    @property
+    def probability_dict(self) -> Union[Dict, None]:
+        if self._state is None:
+            return None
+
+        if self._probability_dict is not None:
+            return self._probability_dict
+        else:
+            self._probability_dict = probability_dict_from_state(self.state)
+            return self._probability_dict
