@@ -152,9 +152,7 @@ def create_double_controlled_matrix(
             elif i == target_qubit:
                 target_matrix = np.kron(target_matrix, base_matrix)
             else:
-                target_matrix = np.kron(
-                    target_matrix, create_identity(2)
-                )
+                target_matrix = np.kron(target_matrix, create_identity(2))
 
     matrix = control_matrix00 + control_matrix01 + control_matrix10 + target_matrix
     return matrix

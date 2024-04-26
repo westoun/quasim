@@ -23,6 +23,7 @@ from quasimp.gates import (
     CCX,
     CCZ,
     Phase,
+    Swap,
 )
 
 from qiskit import QuantumCircuit, Aer
@@ -46,6 +47,7 @@ GATES = [
     "CCX",
     "CCZ",
     "PHASE",
+    "SWAP",
 ]
 
 
@@ -160,6 +162,12 @@ def create_random_circuits(
 
             qiskit_circuit.p(theta, target_qubit)
             quasimp_circuit.apply(Phase(target_qubit, theta))
+
+        elif gate_type == "SWAP":
+            qubit1, qubit2 = sample(range(0, qubit_num), 2)
+
+            qiskit_circuit.swap(qubit1=qubit1, qubit2=qubit2)
+            quasimp_circuit.apply(Swap(qubit1, qubit2))
 
         else:
             raise NotImplementedError()

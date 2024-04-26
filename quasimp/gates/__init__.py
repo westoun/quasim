@@ -16,3 +16,4 @@ from .crz import CRZ
 from .ccx import CCX
 from .ccz import CCZ
 from .phase import Phase
+from .swap import Swap
