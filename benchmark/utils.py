@@ -5,7 +5,25 @@ from random import choice, randint, sample, random
 from typing import List, Tuple
 
 from quasimp import QuaSimP, Circuit
-from quasimp.gates import CH, CRZ, CRX, CRY, CX, CY, CZ, H, RX, RY, RZ, X, Y, Z
+from quasimp.gates import (
+    CH,
+    CRZ,
+    CRX,
+    CRY,
+    CX,
+    CY,
+    CZ,
+    H,
+    RX,
+    RY,
+    RZ,
+    X,
+    Y,
+    Z,
+    CCX,
+    CCZ,
+    Phase,
+)
 
 from qiskit import QuantumCircuit, Aer
 
@@ -25,6 +43,9 @@ GATES = [
     "RX",
     "RY",
     "RZ",
+    "CCX",
+    "CCZ",
+    "PHASE",
 ]
 
 
@@ -119,6 +140,27 @@ def create_random_circuits(
             qiskit_circuit.crz(theta, control_qubit, target_qubit)
             quasimp_circuit.apply(CRZ(control_qubit, target_qubit, theta))
 
+        elif gate_type == "CCX":
+            target_qubit, control_qubit1, control_qubit2 = sample(
+                range(0, qubit_num), 3
+            )
+            qiskit_circuit.ccx(control_qubit1, control_qubit2, target_qubit)
+            quasimp_circuit.apply(CCX([control_qubit1, control_qubit2], target_qubit))
+
+        elif gate_type == "CCZ":
+            target_qubit, control_qubit1, control_qubit2 = sample(
+                range(0, qubit_num), 3
+            )
+            qiskit_circuit.ccz(control_qubit1, control_qubit2, target_qubit)
+            quasimp_circuit.apply(CCZ([control_qubit1, control_qubit2], target_qubit))
+
+        elif gate_type == "PHASE":
+            target_qubit = randint(0, qubit_num - 1)
+            theta = random() * 2 * np.pi - np.pi
+
+            qiskit_circuit.p(theta, target_qubit)
+            quasimp_circuit.apply(Phase(target_qubit, theta))
+
         else:
             raise NotImplementedError()
 
@@ -131,7 +173,7 @@ def evaluate_qiskit_circuits(
     probabilities = []
 
     for circuit in circuits:
-        circuit = circuit.decompose(reps=1)
+        circuit = circuit.decompose(reps=5)
 
         job = backend.run(circuit)
 
