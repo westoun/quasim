@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import numpy as np
+from typing import List
 
 
 def create_identity(dim: int = 2) -> np.ndarray:
@@ -67,3 +68,30 @@ def create_controlled_matrix(
 
     matrix = control_matrix + target_matrix
     return matrix
+
+
+def create_double_controlled_matrix(
+    base_matrix: np.ndarray,
+    control_qubit1: int,
+    control_qubit2: int,
+    target_qubit: int,
+    qubit_num: int,
+) -> np.ndarray:
+    closest_control_qubit = -1
+    furthest_control_qubit = -1
+
+    if abs(control_qubit1 - target_qubit) < abs(control_qubit2 - target_qubit):
+        closest_control_qubit = control_qubit1
+        furthest_control_qubit = control_qubit2
+    else:
+        closest_control_qubit = control_qubit2
+        furthest_control_qubit = control_qubit1
+
+    controlled_matrix = create_controlled_matrix(base_matrix)
+
+    # First, create the controlled matrix between the target and
+    # the control qubit that is closest to it.
+
+    # Then: add padding and remaining qubit.
+
+    pass
