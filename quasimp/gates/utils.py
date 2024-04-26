@@ -77,21 +77,84 @@ def create_double_controlled_matrix(
     target_qubit: int,
     qubit_num: int,
 ) -> np.ndarray:
-    closest_control_qubit = -1
-    furthest_control_qubit = -1
 
-    if abs(control_qubit1 - target_qubit) < abs(control_qubit2 - target_qubit):
-        closest_control_qubit = control_qubit1
-        furthest_control_qubit = control_qubit2
-    else:
-        closest_control_qubit = control_qubit2
-        furthest_control_qubit = control_qubit1
+    control_matrix00 = None
+    for i in range(qubit_num):
+        if control_matrix00 is None:
+            if i == control_qubit1:
+                control_matrix00 = PROJECTOR_0
+            elif i == control_qubit2:
+                control_matrix00 = PROJECTOR_0
+            else:
+                control_matrix00 = create_identity(2)
 
-    controlled_matrix = create_controlled_matrix(base_matrix)
+        else:
+            if i == control_qubit1:
+                control_matrix00 = np.kron(control_matrix00, PROJECTOR_0)
+            elif i == control_qubit2:
+                control_matrix00 = np.kron(control_matrix00, PROJECTOR_0)
+            else:
+                control_matrix00 = np.kron(control_matrix00, create_identity(2))
 
-    # First, create the controlled matrix between the target and
-    # the control qubit that is closest to it.
+    control_matrix01 = None
+    for i in range(qubit_num):
+        if control_matrix01 is None:
+            if i == control_qubit1:
+                control_matrix01 = PROJECTOR_0
+            elif i == control_qubit2:
+                control_matrix01 = PROJECTOR_1
+            else:
+                control_matrix01 = create_identity(2)
 
-    # Then: add padding and remaining qubit.
+        else:
+            if i == control_qubit1:
+                control_matrix01 = np.kron(control_matrix01, PROJECTOR_0)
+            elif i == control_qubit2:
+                control_matrix01 = np.kron(control_matrix01, PROJECTOR_1)
+            else:
+                control_matrix01 = np.kron(control_matrix01, create_identity(2))
 
-    pass
+    control_matrix10 = None
+    for i in range(qubit_num):
+        if control_matrix10 is None:
+            if i == control_qubit1:
+                control_matrix10 = PROJECTOR_1
+            elif i == control_qubit2:
+                control_matrix10 = PROJECTOR_0
+            else:
+                control_matrix10 = create_identity(2)
+
+        else:
+            if i == control_qubit1:
+                control_matrix10 = np.kron(control_matrix10, PROJECTOR_1)
+            elif i == control_qubit2:
+                control_matrix10 = np.kron(control_matrix10, PROJECTOR_0)
+            else:
+                control_matrix10 = np.kron(control_matrix10, create_identity(2))
+
+    target_matrix = None
+    for i in range(qubit_num):
+        if target_matrix is None:
+            if i == control_qubit1:
+                target_matrix = PROJECTOR_1
+            elif i == control_qubit2:
+                target_matrix = PROJECTOR_1
+            elif i == target_qubit:
+                target_matrix = base_matrix
+            else:
+                target_matrix = create_identity(2)
+
+        else:
+            if i == control_qubit1:
+                target_matrix = np.kron(target_matrix, PROJECTOR_1)
+            elif i == control_qubit2:
+                target_matrix = np.kron(target_matrix, PROJECTOR_1)
+            elif i == target_qubit:
+                target_matrix = np.kron(target_matrix, base_matrix)
+            else:
+                target_matrix = np.kron(
+                    target_matrix, create_identity(2)
+                )
+
+    matrix = control_matrix00 + control_matrix01 + control_matrix10 + target_matrix
+    return matrix
