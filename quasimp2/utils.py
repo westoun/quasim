@@ -31,11 +31,14 @@ def probability_dict_from_state(state: np.ndarray) -> np.ndarray:
 
         state: str = ""
 
+        remainder = i
         for j in reversed(range(qubit_num)):
-            if i % (2 ** (j + 1)) == 0:
-                state += "0"
-            else:
+            
+            if remainder >= 2 ** j:
                 state += "1"
+                remainder -= 2**j
+            else:
+                state += "0"
 
         probability_dict[state] = probability
 
