@@ -128,10 +128,6 @@ class QuaSimP2:
                 aggregated_qubit_group["state"], qubit_group["state"]
             )
 
-        reverse_map = {}
-        for i in qubit_map:
-            reverse_map[qubit_map[i]] = i
-
         sorting_order = [0] * (2**circuit.qubit_num)
         for i in range(2**circuit.qubit_num):
 
@@ -139,19 +135,17 @@ class QuaSimP2:
             for j in reversed(range(circuit.qubit_num)):
 
                 if remainder >= 2**j:
-                    sorting_order[i] += 2 ** aggregated_qubit_group["qubits"].index(j)
+                    sorting_order[i] += 2 ** (
+                        circuit.qubit_num
+                        - aggregated_qubit_group["qubits"][circuit.qubit_num - j - 1]
+                        - 1
+                    )
                     remainder -= 2**j
 
-        from pprint import pprint
-        print("\n", reverse_map)
-        print(aggregated_qubit_group["qubits"])
-        print(sorting_order)
-
-        ordered_state = np.zeros(2**circuit.qubit_num, dtype=np.complex128)
+        ordered_state = [0] * 2**circuit.qubit_num
         for i in range(2**circuit.qubit_num):
-            ordered_state[i] = aggregated_qubit_group["state"][sorting_order[i]]
+            ordered_state[sorting_order[i]] = aggregated_qubit_group["state"][i]
 
-        # ordered_state = aggregated_qubit_group["state"][sorting_order]
+        ordered_state = np.asarray(ordered_state, dtype=np.complex128)
+
         circuit.set_state(ordered_state)
-        # state = np.flip(aggregated_qubit_group["state"])
-        # circuit.set_state(aggregated_qubit_group["state"])
