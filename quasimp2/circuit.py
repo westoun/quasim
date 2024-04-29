@@ -55,4 +55,4 @@ class Circuit:
             return self._probability_dict
 
     def __repr__(self) -> str:
-        return f"[{','.join([str(gate) for gate in self.gates])}]"
+        return f"[{', '.join([str(gate) for gate in self.gates])}]"
