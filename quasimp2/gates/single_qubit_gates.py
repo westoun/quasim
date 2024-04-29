@@ -27,6 +27,10 @@ class Gate(IGate):
     def qubits(self) -> List[int]:
         return [self.target_qubit]
 
+    def __repr__(self) -> str:
+        gate_name = str(type(self)).split(".")[-1].replace("'>", "")
+        return f"{gate_name}(target={self.target_qubit})"
+
 
 class H(Gate):
     matrix: np.ndarray = H_MATRIX
@@ -46,31 +50,55 @@ class Z(Gate):
 
 class RX(Gate):
     matrix: np.ndarray
+    theta: float
 
     def __init__(self, target_qubit: int, theta: float) -> None:
         self.target_qubit = target_qubit
+        self.theta = theta
         self.matrix = RX_MATRIX(theta)
+
+    def __repr__(self) -> str:
+        gate_name = str(type(self)).split(".")[-1].replace("'>", "")
+        return f"{gate_name}(target={self.target_qubit}, theta={round(self.theta, 3)})"
 
 
 class RY(Gate):
     matrix: np.ndarray
+    theta: float
 
     def __init__(self, target_qubit: int, theta: float) -> None:
         self.target_qubit = target_qubit
+        self.theta = theta
         self.matrix = RY_MATRIX(theta)
+
+    def __repr__(self) -> str:
+        gate_name = str(type(self)).split(".")[-1].replace("'>", "")
+        return f"{gate_name}(target={self.target_qubit}, theta={round(self.theta, 3)})"
 
 
 class RZ(Gate):
     matrix: np.ndarray
+    theta: float
 
     def __init__(self, target_qubit: int, theta: float) -> None:
         self.target_qubit = target_qubit
+        self.theta = theta
         self.matrix = RZ_MATRIX(theta)
+
+    def __repr__(self) -> str:
+        gate_name = str(type(self)).split(".")[-1].replace("'>", "")
+        return f"{gate_name}(target={self.target_qubit}, theta={round(self.theta, 3)})"
 
 
 class Phase(Gate):
     matrix: np.ndarray
+    theta: float
 
     def __init__(self, target_qubit: int, theta: float) -> None:
         self.target_qubit = target_qubit
+        self.theta = theta
         self.matrix = PHASE_MATRIX(theta)
+
+    def __repr__(self) -> str:
+        gate_name = str(type(self)).split(".")[-1].replace("'>", "")
+        return f"{gate_name}(target={self.target_qubit}, theta={round(self.theta, 3)})"

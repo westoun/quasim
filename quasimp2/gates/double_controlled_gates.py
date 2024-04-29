@@ -24,6 +24,10 @@ class CCGate(IGate):
     def qubits(self) -> List[int]:
         return [self.target_qubit, self.control_qubit1, self.control_qubit2]
 
+    def __repr__(self) -> str:
+        gate_name = str(type(self)).split(".")[-1].replace("'>", "")
+        return f"{gate_name}(control1={self.control_qubit1}, control2={self.control_qubit2}, target={self.target_qubit})"
+
 
 class CCX(CCGate):
     matrix: np.ndarray = X_MATRIX

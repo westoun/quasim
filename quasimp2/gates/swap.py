@@ -7,12 +7,18 @@ from typing import List
 from .interface import IGate
 
 
-@dataclass
-class SwapGate(IGate):
+class Swap(IGate):
     qubit1: int
     qubit2: int
-    matrix: np.ndarray = None
+
+    def __init__(self, qubit1: int, qubit2: int) -> None:
+        self.qubit1 = qubit1
+        self.qubit2 = qubit2
 
     @property
     def qubits(self) -> List[int]:
         return [self.qubit1, self.qubit2]
+
+    def __repr__(self) -> str:
+        gate_name = str(type(self)).split(".")[-1].replace("'>", "")
+        return f"{gate_name}(qubit1={self.qubit1}, qubit2={self.qubit2})"

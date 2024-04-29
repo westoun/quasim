@@ -29,6 +29,10 @@ class CGate(IGate):
     def qubits(self) -> List[int]:
         return [self.target_qubit, self.control_qubit]
 
+    def __repr__(self) -> str:
+        gate_name = str(type(self)).split(".")[-1].replace("'>", "")
+        return f"{gate_name}(control={self.control_qubit}, target={self.target_qubit})"
+
 
 class CH(CGate):
     matrix: np.ndarray = H_MATRIX
@@ -48,26 +52,44 @@ class CZ(CGate):
 
 class CRX(CGate):
     matrix: np.ndarray
+    theta: float
 
     def __init__(self, control_qubit: int, target_qubit: int, theta: float) -> None:
         self.control_qubit = control_qubit
         self.target_qubit = target_qubit
+        self.theta = theta
         self.matrix = RX_MATRIX(theta)
+
+    def __repr__(self) -> str:
+        gate_name = str(type(self)).split(".")[-1].replace("'>", "")
+        return f"{gate_name}(control={self.control_qubit}, target={self.target_qubit}, theta={round(self.theta, 3)})"
 
 
 class CRY(CGate):
     matrix: np.ndarray
+    theta: float
 
     def __init__(self, control_qubit: int, target_qubit: int, theta: float) -> None:
         self.control_qubit = control_qubit
         self.target_qubit = target_qubit
+        self.theta = theta
         self.matrix = RY_MATRIX(theta)
+
+    def __repr__(self) -> str:
+        gate_name = str(type(self)).split(".")[-1].replace("'>", "")
+        return f"{gate_name}(control={self.control_qubit}, target={self.target_qubit}, theta={round(self.theta, 3)})"
 
 
 class CRZ(CGate):
     matrix: np.ndarray
+    theta: float
 
     def __init__(self, control_qubit: int, target_qubit: int, theta: float) -> None:
         self.control_qubit = control_qubit
         self.target_qubit = target_qubit
+        self.theta = theta
         self.matrix = RZ_MATRIX(theta)
+
+    def __repr__(self) -> str:
+        gate_name = str(type(self)).split(".")[-1].replace("'>", "")
+        return f"{gate_name}(control={self.control_qubit}, target={self.target_qubit}, theta={round(self.theta, 3)})"
