@@ -27,10 +27,6 @@ class QuaSimP2:
         if circuit.state is not None:
             return circuit.state
 
-        qubit_map = {}
-        for i in range(circuit.qubit_num):
-            qubit_map[i] = i
-
         qubit_groups = []
         for i in range(circuit.qubit_num):
             qubit_group = {"qubits": [i], "state": QUBIT_STARTING_STATE}
@@ -38,20 +34,21 @@ class QuaSimP2:
 
         for gate in circuit.gates:
             if type(gate) == Swap:
-                qubit_target1 = qubit_map[gate.qubit1]
-                qubit_target2 = qubit_map[gate.qubit2]
+                for qubit_group in qubit_groups:
+                    for i in range(len(qubit_group["qubits"])):
+                        if qubit_group["qubits"][i] == gate.qubit1:
+                            qubit_group["qubits"][i] = gate.qubit2
 
-                qubit_map[gate.qubit1] = qubit_target2
-                qubit_map[gate.qubit2] = qubit_target1
+                        elif qubit_group["qubits"][i] == gate.qubit2:
+                            qubit_group["qubits"][i] = gate.qubit1
+
 
                 continue
-
-            qubits = [qubit_map[qubit] for qubit in gate.qubits]
 
             relevant_qubit_groups = []
             for qubit_group in qubit_groups:
                 for qubit in qubit_group["qubits"]:
-                    if qubit in qubits:
+                    if qubit in gate.qubits:
                         if qubit_group not in relevant_qubit_groups:
                             relevant_qubit_groups.append(qubit_group)
 
@@ -69,7 +66,7 @@ class QuaSimP2:
             qubit_num = len(relevant_qubit_group["qubits"])
             if issubclass(gate.__class__, Gate):
                 target_qubit = relevant_qubit_group["qubits"].index(
-                    qubit_map[gate.target_qubit]
+                    gate.target_qubit
                 )
                 matrix = create_matrix(
                     gate.matrix, target_qubit=target_qubit, qubit_num=qubit_num
@@ -80,10 +77,10 @@ class QuaSimP2:
 
             elif issubclass(gate.__class__, CGate):
                 target_qubit = relevant_qubit_group["qubits"].index(
-                    qubit_map[gate.target_qubit]
+                    gate.target_qubit
                 )
                 control_qubit = relevant_qubit_group["qubits"].index(
-                    qubit_map[gate.control_qubit]
+                    gate.control_qubit
                 )
                 matrix = create_controlled_matrix(
                     gate.matrix,
@@ -97,13 +94,13 @@ class QuaSimP2:
 
             elif issubclass(gate.__class__, CCGate):
                 target_qubit = relevant_qubit_group["qubits"].index(
-                    qubit_map[gate.target_qubit]
+                    gate.target_qubit
                 )
                 control_qubit1 = relevant_qubit_group["qubits"].index(
-                    qubit_map[gate.control_qubit1]
+                    gate.control_qubit1
                 )
                 control_qubit2 = relevant_qubit_group["qubits"].index(
-                    qubit_map[gate.control_qubit2]
+                    gate.control_qubit2
                 )
                 matrix = create_double_controlled_matrix(
                     gate.matrix,
