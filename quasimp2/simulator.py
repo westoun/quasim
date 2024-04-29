@@ -4,7 +4,7 @@ import numpy as np
 from typing import List, Dict
 
 from .circuit import Circuit
-from .gates import IGate, SwapGate, Gate, CGate, CCGate
+from .gates import IGate, Swap, Gate, CGate, CCGate
 from .gates.utils import (
     create_double_controlled_matrix,
     create_controlled_matrix,
@@ -37,12 +37,14 @@ class QuaSimP2:
             qubit_groups.append(qubit_group)
 
         for gate in circuit.gates:
-            if type(gate) == SwapGate:
+            if type(gate) == Swap:
                 qubit_target1 = qubit_map[gate.qubit1]
                 qubit_target2 = qubit_map[gate.qubit2]
 
                 qubit_map[gate.qubit1] = qubit_target2
                 qubit_map[gate.qubit2] = qubit_target1
+
+                continue
 
             qubits = [qubit_map[qubit] for qubit in gate.qubits]
 
@@ -56,14 +58,13 @@ class QuaSimP2:
                         break
 
             relevant_qubit_group = relevant_qubit_groups[0]
-            if len(relevant_qubit_groups) > 1:
-                for qubit_group in relevant_qubit_groups[1:]:
-                    relevant_qubit_group["qubits"].extend(qubit_group["qubits"])
-                    relevant_qubit_group["state"] = np.kron(
-                        relevant_qubit_group["state"], qubit_group["state"]
-                    )
+            for qubit_group in relevant_qubit_groups[1:]:
+                relevant_qubit_group["qubits"].extend(qubit_group["qubits"])
+                relevant_qubit_group["state"] = np.kron(
+                    relevant_qubit_group["state"], qubit_group["state"]
+                )
 
-                    qubit_groups.remove(qubit_group)
+                qubit_groups.remove(qubit_group)
 
             qubit_num = len(relevant_qubit_group["qubits"])
             if issubclass(gate.__class__, Gate):
@@ -120,6 +121,37 @@ class QuaSimP2:
                     f"Unknown gate type for {gate} ({type(gate)})"
                 )
 
-        reverse_qubit_map = {}
+        aggregated_qubit_group = qubit_groups[0]
+        for qubit_group in qubit_groups[1:]:
+            aggregated_qubit_group["qubits"].extend(qubit_group["qubits"])
+            aggregated_qubit_group["state"] = np.kron(
+                aggregated_qubit_group["state"], qubit_group["state"]
+            )
+
+        reverse_map = {}
         for i in qubit_map:
-            reverse_qubit_map[qubit_map[i]] = i
+            reverse_map[qubit_map[i]] = i
+
+        sorting_order = [0] * (2**circuit.qubit_num)
+        for i in range(2**circuit.qubit_num):
+
+            remainder = i
+            for j in reversed(range(circuit.qubit_num)):
+
+                if remainder >= 2**j:
+                    sorting_order[i] += 2 ** aggregated_qubit_group["qubits"].index(j)
+                    remainder -= 2**j
+
+        from pprint import pprint
+        print("\n", reverse_map)
+        print(aggregated_qubit_group["qubits"])
+        print(sorting_order)
+
+        ordered_state = np.zeros(2**circuit.qubit_num, dtype=np.complex128)
+        for i in range(2**circuit.qubit_num):
+            ordered_state[i] = aggregated_qubit_group["state"][sorting_order[i]]
+
+        # ordered_state = aggregated_qubit_group["state"][sorting_order]
+        circuit.set_state(ordered_state)
+        # state = np.flip(aggregated_qubit_group["state"])
+        # circuit.set_state(aggregated_qubit_group["state"])
