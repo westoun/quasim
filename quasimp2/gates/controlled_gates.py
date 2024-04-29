@@ -4,8 +4,16 @@ import numpy as np
 from typing import List
 
 from .interface import IGate
-
-X_MATRIX = np.array([[0, 1], [1, 0]], dtype=np.complex128)
+from ._matrices import (
+    H_MATRIX,
+    X_MATRIX,
+    Y_MATRIX,
+    Z_MATRIX,
+    RX_MATRIX,
+    RY_MATRIX,
+    RZ_MATRIX,
+    PHASE_MATRIX,
+)
 
 
 class CGate(IGate):
@@ -22,5 +30,44 @@ class CGate(IGate):
         return [self.target_qubit, self.control_qubit]
 
 
+class CH(CGate):
+    matrix: np.ndarray = H_MATRIX
+
+
 class CX(CGate):
     matrix: np.ndarray = X_MATRIX
+
+
+class CY(CGate):
+    matrix: np.ndarray = Y_MATRIX
+
+
+class CZ(CGate):
+    matrix: np.ndarray = Z_MATRIX
+
+
+class CRX(CGate):
+    matrix: np.ndarray
+
+    def __init__(self, control_qubit: int, target_qubit: int, theta: float) -> None:
+        self.control_qubit = control_qubit
+        self.target_qubit = target_qubit
+        self.matrix = RX_MATRIX(theta)
+
+
+class CRY(CGate):
+    matrix: np.ndarray
+
+    def __init__(self, control_qubit: int, target_qubit: int, theta: float) -> None:
+        self.control_qubit = control_qubit
+        self.target_qubit = target_qubit
+        self.matrix = RY_MATRIX(theta)
+
+
+class CRZ(CGate):
+    matrix: np.ndarray
+
+    def __init__(self, control_qubit: int, target_qubit: int, theta: float) -> None:
+        self.control_qubit = control_qubit
+        self.target_qubit = target_qubit
+        self.matrix = RZ_MATRIX(theta)

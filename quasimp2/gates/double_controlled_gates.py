@@ -4,6 +4,7 @@ import numpy as np
 from typing import List
 
 from .interface import IGate
+from ._matrices import X_MATRIX, Z_MATRIX
 
 
 class CCGate(IGate):
@@ -22,3 +23,11 @@ class CCGate(IGate):
     @property
     def qubits(self) -> List[int]:
         return [self.target_qubit, self.control_qubit1, self.control_qubit2]
+
+
+class CCX(CCGate):
+    matrix: np.ndarray = X_MATRIX
+
+
+class CCZ(CCGate):
+    matrix: np.ndarray = Z_MATRIX
