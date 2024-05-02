@@ -8,6 +8,9 @@ from .interface import IGate
 
 
 class Swap(IGate):
+    """Swap gate.
+    Swaps the states of the two specified qubits."""
+
     qubit1: int
     qubit2: int
 

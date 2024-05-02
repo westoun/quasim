@@ -17,6 +17,8 @@ from ._matrices import (
 
 
 class CGate(IGate):
+    """Base class for all controlled qubit gates."""
+
     target_qubit: int
     control_qubit: int
     matrix: np.ndarray = None
@@ -35,22 +37,53 @@ class CGate(IGate):
 
 
 class CH(CGate):
+    """Controlled Hadamard gate.
+
+    Applies the hadamard gate to the target_qubit
+    if the control_qubit is in a state of |1>.
+    """
+
     matrix: np.ndarray = H_MATRIX
 
 
 class CX(CGate):
+    """Controlled Pauli-X gate.
+
+    Applies the pauli-x gate to the target_qubit
+    if the control_qubit is in a state of |1>.
+    """
+
     matrix: np.ndarray = X_MATRIX
 
 
 class CY(CGate):
+    """Controlled Pauli-Y gate.
+
+    Applies the pauli-y gate to the target_qubit
+    if the control_qubit is in a state of |1>.
+    """
+
     matrix: np.ndarray = Y_MATRIX
 
 
 class CZ(CGate):
+    """Controlled Pauli-Z gate.
+
+    Applies the pauli-z gate to the target_qubit
+    if the control_qubit is in a state of |1>.
+    """
+
     matrix: np.ndarray = Z_MATRIX
 
 
 class CRX(CGate):
+    """Controlled Rotational-X gate.
+
+    Performs a rotation by theta/2 degrees around the X axis
+    of the target_qubit if the control_qubit is in a state
+    of |1>.
+    """
+
     matrix: np.ndarray
     theta: float
 
@@ -66,6 +99,13 @@ class CRX(CGate):
 
 
 class CRY(CGate):
+    """Controlled Rotational-Y gate.
+
+    Performs a rotation by theta/2 degrees around the Y axis
+    of the target_qubit if the control_qubit is in a state
+    of |1>.
+    """
+
     matrix: np.ndarray
     theta: float
 
@@ -81,6 +121,13 @@ class CRY(CGate):
 
 
 class CRZ(CGate):
+    """Controlled Rotational-Z gate.
+
+    Performs a rotation by theta/2 degrees around the Z axis
+    of the target_qubit if the control_qubit is in a state
+    of |1>.
+    """
+
     matrix: np.ndarray
     theta: float
 

@@ -8,6 +8,8 @@ from ._matrices import X_MATRIX, Z_MATRIX
 
 
 class CCGate(IGate):
+    """Base class for all double controlled qubit gates."""
+
     target_qubit: int
     control_qubit1: int
     control_qubit2: int
@@ -30,8 +32,20 @@ class CCGate(IGate):
 
 
 class CCX(CCGate):
+    """Double Controlled Pauli-X gate.
+
+    Applies the pauli-x gate to the target_qubit
+    if both control_qubits are in a state of |1>.
+    """
+
     matrix: np.ndarray = X_MATRIX
 
 
 class CCZ(CCGate):
+    """Double Controlled Pauli-Z gate.
+
+    Applies the pauli-z gate to the target_qubit
+    if both control_qubits are in a state of |1>.
+    """
+
     matrix: np.ndarray = Z_MATRIX

@@ -9,11 +9,18 @@ import warnings
 
 @dataclass
 class QubitGroup:
+    """Helper class used in the simulator to keep track
+    of which qubit sets have been entangled (for the sake
+    of faster computation)."""
+
     qubits: List[int]
     state: np.ndarray
 
 
 def probabilities_from_state(state: np.ndarray) -> np.ndarray:
+    """Returns the probabilities corresponding to a quantum
+    system state."""
+
     conjugate = state.conjugate()
 
     with warnings.catch_warnings():
@@ -27,6 +34,11 @@ def probabilities_from_state(state: np.ndarray) -> np.ndarray:
 
 
 def probability_dict_from_state(state: np.ndarray) -> np.ndarray:
+    """Returns a dictionary of the probabilities corresponding
+    to the specified state. States with a probability of 0 are
+    omitted.
+    """
+
     qubit_num = int(math.log2(len(state)))
 
     probabilities = probabilities_from_state(state)

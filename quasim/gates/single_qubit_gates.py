@@ -17,6 +17,8 @@ from ._matrices import (
 
 
 class Gate(IGate):
+    """Base class for all single qubit gates."""
+
     target_qubit: int
     matrix: np.ndarray = None
 
@@ -33,22 +35,34 @@ class Gate(IGate):
 
 
 class H(Gate):
+    """Hadamard gate."""
+
     matrix: np.ndarray = H_MATRIX
 
 
 class X(Gate):
+    """Pauli-X gate."""
+
     matrix: np.ndarray = X_MATRIX
 
 
 class Y(Gate):
+    """Pauli-Y gate."""
+
     matrix: np.ndarray = Y_MATRIX
 
 
 class Z(Gate):
+    """Pauli-Z gate."""
+
     matrix: np.ndarray = Z_MATRIX
 
 
 class RX(Gate):
+    """Rotational-X gate.
+
+    Performs a rotation by theta/2 degrees around the X axis."""
+
     matrix: np.ndarray
     theta: float
 
@@ -63,6 +77,10 @@ class RX(Gate):
 
 
 class RY(Gate):
+    """Rotational-Y gate.
+
+    Performs a rotation by theta/2 degrees around the Y axis."""
+
     matrix: np.ndarray
     theta: float
 
@@ -77,6 +95,10 @@ class RY(Gate):
 
 
 class RZ(Gate):
+    """Rotational-Z gate.
+
+    Performs a rotation by theta/2 degrees around the Z axis."""
+
     matrix: np.ndarray
     theta: float
 
@@ -91,6 +113,8 @@ class RZ(Gate):
 
 
 class Phase(Gate):
+    """Phase gate."""
+
     matrix: np.ndarray
     theta: float
 

@@ -6,8 +6,13 @@ from typing import List
 
 
 class IGate(ABC):
+    """Base class of all quantum gates."""
+
     matrix: np.ndarray
 
     @property
     @abstractmethod
-    def qubits(self) -> List[int]: ...
+    def qubits(self) -> List[int]:
+        """Return which qubits the specific gate
+        affects."""
+        ...

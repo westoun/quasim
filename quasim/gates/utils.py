@@ -5,12 +5,19 @@ from typing import List
 
 
 def create_identity(dim: int = 2) -> np.ndarray:
+    """Creates an identity matrix of the specified
+    dimensionality."""
     return np.eye(dim, dtype=np.complex128)
 
 
 def create_matrix(
     base_matrix: np.ndarray, target_qubit: int, qubit_num: int
 ) -> np.ndarray:
+    """Creates a composed matrix by padding the specified
+    base matrix with identity matrices until the desired
+    dimensionality of 2^qubit_num is reached.
+    """
+
     matrix = base_matrix
 
     if qubit_num == 1:
@@ -39,6 +46,10 @@ PROJECTOR_1 = np.array([[0, 0], [0, 1]], dtype=np.complex128)
 def create_controlled_matrix(
     base_matrix: np.ndarray, control_qubit: int, target_qubit: int, qubit_num: int
 ) -> np.ndarray:
+    """Creates a controlled matrix based on a base matrix and
+    a specified control and target qubit.
+    """
+
     # Based on https://quantumcomputing.stackexchange.com/a/4255
     control_matrix = create_matrix(
         PROJECTOR_0, target_qubit=control_qubit, qubit_num=qubit_num
@@ -77,6 +88,9 @@ def create_double_controlled_matrix(
     target_qubit: int,
     qubit_num: int,
 ) -> np.ndarray:
+    """Creates a controlled matrix based on a base matrix, two
+    control qubits, and target qubit.
+    """
 
     control_matrix00 = None
     for i in range(qubit_num):

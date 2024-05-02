@@ -158,14 +158,24 @@ def get_sorted_state(qubit_group: QubitGroup) -> np.ndarray:
 
 
 class QuaSim:
+    """Quantum circuit simulator used to evaluate quantum
+    circuits.
+    """
+
     def __init__(self) -> None:
         pass
 
     def evaluate(self, circuits: List[Circuit]) -> None:
+        """Evaluates a list of quantum circuits and stores the
+        state at the end of each circuit in circuit.state."""
+
         for circuit in circuits:
             self.evaluate_circuit(circuit)
 
     def evaluate_circuit(self, circuit: Circuit) -> None:
+        """Evaluates a quantum circuit and stores the
+        state at the end of the circuit in circuit.state."""
+
         if circuit.state is not None:
             return circuit.state
 

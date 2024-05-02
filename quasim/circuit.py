@@ -8,6 +8,10 @@ from .utils import probabilities_from_state, probability_dict_from_state
 
 
 class Circuit:
+    """A quantum circuit consisting of a list of gates
+    and a specified amount of qubits.
+    """
+
     gates: List[IGate]
     qubit_num: int
 
@@ -21,12 +25,20 @@ class Circuit:
         self.qubit_num = qubit_num
 
     def apply(self, gate: IGate) -> None:
+        """Appends the specified gate to the list of
+        gates already in the circuit."""
         self._state, self._probabilities = None, None
 
         self.gates.append(gate)
 
     @property
     def state(self) -> Union[np.ndarray, None]:
+        """Returns the state of the circuit after all
+        quantum gates have been applied.
+
+        If the circuit has not been evaluated by the
+        simulator, None is returned.
+        """
         return self._state
 
     def set_state(self, state: np.ndarray) -> None:
@@ -34,6 +46,14 @@ class Circuit:
 
     @property
     def probabilities(self) -> Union[np.ndarray, None]:
+        """Returns the probabilities corresponding to the
+        state of the circuit after all
+        quantum gates have been applied.
+
+        If the circuit has not been evaluated by the
+        simulator, None is returned.
+        """
+
         if self._state is None:
             return None
 
@@ -45,6 +65,15 @@ class Circuit:
 
     @property
     def probability_dict(self) -> Union[Dict, None]:
+        """Returns a dictionary of the probabilities
+        corresponding to the state of the circuit after all
+        quantum gates have been applied. States with a
+        probability of 0 are omitted.
+
+        If the circuit has not been evaluated by the
+        simulator, None is returned.
+        """
+
         if self._state is None:
             return None
 
