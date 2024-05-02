@@ -1,1 +1,1 @@
-# Quantum Simulator for Populations (QuaSimP)
+# Quantum Simulation made Simple (QuaSim)
