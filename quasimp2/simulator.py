@@ -17,6 +17,9 @@ QUBIT_STARTING_STATE[0] = 1
 
 
 def apply_swap_gate(qubit_groups: List[QubitGroup], gate: Swap) -> None:
+    """Swap the indices of the qubits targetted by the swap gate
+    in place.
+    """
     for qubit_group in qubit_groups:
         for i in range(len(qubit_group.qubits)):
             if qubit_group.qubits[i] == gate.qubit1:
@@ -27,6 +30,9 @@ def apply_swap_gate(qubit_groups: List[QubitGroup], gate: Swap) -> None:
 
 
 def initialize_qubit_groups(qubit_num: int) -> List[QubitGroup]:
+    """Create a list of qubit groups where each qubit group contains
+    exactly one qubit id.
+    """
     qubit_groups: List[QubitGroup] = []
     for i in range(qubit_num):
         qubit_groups.append(QubitGroup(qubits=[i], state=QUBIT_STARTING_STATE))
@@ -36,6 +42,10 @@ def initialize_qubit_groups(qubit_num: int) -> List[QubitGroup]:
 def select_affected_qubit_groups(
     qubit_groups: List[QubitGroup], gate: IGate
 ) -> List[QubitGroup]:
+    """Select the subset of qubit groups whose qubit ids
+    are affected by the specified gate.
+    """
+
     relevant_qubit_groups: List[QubitGroup] = []
     for qubit_group in qubit_groups:
         for qubit in qubit_group.qubits:
@@ -51,6 +61,10 @@ def select_affected_qubit_groups(
 def merge_qubit_groups(
     relevant_groups: List[QubitGroup], total_groups: List[QubitGroup]
 ) -> QubitGroup:
+    """Merge selected (relevant) qubit groups into a single qubit group
+    and remove the previous qubit groups from the list of all qubit groups.
+    The removal happens in place, while the merged qubit group is returned.
+    """
     merged_qubit_group = relevant_groups[0]
     for qubit_group in relevant_groups[1:]:
         merged_qubit_group.qubits.extend(qubit_group.qubits)
@@ -62,6 +76,9 @@ def merge_qubit_groups(
 
 
 def apply_gate(relevant_qubit_group: QubitGroup, gate: Gate) -> None:
+    """Apply the action of the specified gate onto the selected
+    qubit group in place.
+    """
     target_qubit = relevant_qubit_group.qubits.index(gate.target_qubit)
     matrix = create_matrix(
         gate.matrix,
@@ -72,6 +89,9 @@ def apply_gate(relevant_qubit_group: QubitGroup, gate: Gate) -> None:
 
 
 def apply_cgate(relevant_qubit_group: QubitGroup, gate: CGate) -> None:
+    """Apply the action of the specified controlled gate onto the
+    selected qubit group in place.
+    """
     target_qubit = relevant_qubit_group.qubits.index(gate.target_qubit)
     control_qubit = relevant_qubit_group.qubits.index(gate.control_qubit)
     matrix = create_controlled_matrix(
@@ -84,6 +104,9 @@ def apply_cgate(relevant_qubit_group: QubitGroup, gate: CGate) -> None:
 
 
 def apply_ccgate(relevant_qubit_group: QubitGroup, gate: CCGate) -> None:
+    """Apply the action of the specified double controlled gate onto the
+    selected qubit group in place.
+    """
     target_qubit = relevant_qubit_group.qubits.index(gate.target_qubit)
     control_qubit1 = relevant_qubit_group.qubits.index(gate.control_qubit1)
     control_qubit2 = relevant_qubit_group.qubits.index(gate.control_qubit2)
@@ -98,6 +121,7 @@ def apply_ccgate(relevant_qubit_group: QubitGroup, gate: CCGate) -> None:
 
 
 def aggregate_qubit_groups(qubit_groups: List[QubitGroup]) -> QubitGroup:
+    """Combine a list of qubit groups into a new joined qubit group."""
     aggregated_qubit_group = qubit_groups[0]
     for qubit_group in qubit_groups[1:]:
         aggregated_qubit_group.qubits.extend(qubit_group.qubits)
@@ -108,6 +132,9 @@ def aggregate_qubit_groups(qubit_groups: List[QubitGroup]) -> QubitGroup:
 
 
 def get_sorted_state(qubit_group: QubitGroup) -> np.ndarray:
+    """Return a sorted version of the state of a qubit group
+    based on the order of the group's qubit ids.
+    """
     qubit_num = len(qubit_group.qubits)
 
     sorting_order = [0] * (2**qubit_num)
@@ -174,5 +201,5 @@ class QuaSimP2:
         aggregated_qubit_group = aggregate_qubit_groups(qubit_groups)
 
         sorted_state = get_sorted_state(aggregated_qubit_group)
-        
+
         circuit.set_state(sorted_state)
