@@ -6,7 +6,7 @@ from pprint import pprint
 from scipy.spatial import distance
 from typing import List, Tuple
 
-from quasimp import QuaSimP, Circuit
+from quasimp2 import QuaSimP2 as QuaSimP, Circuit
 
 from qiskit import QuantumCircuit, Aer
 
@@ -40,8 +40,11 @@ def run_result_benchmark():
         error = distance.jensenshannon(qiskit_probabilities, quasimp_probabilities)
 
         if error > 0.01:
-            print(f"Encountered strong divergence ({error}) on")
+            print(f"\nEncountered strong divergence ({error}) on")
             print(f"\t{quasimp_circuit}")
+            print(qiskit_probabilities)
+            print(quasimp_probabilities)
+            break 
 
     else:
         print(

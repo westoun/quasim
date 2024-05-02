@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 
-from quasimp import QuaSimP, Circuit
-from quasimp.gates import H, CX, X
+from quasimp2 import QuaSimP2 as QuaSimP, Circuit
+from quasimp2.gates import H, CX, X
 
 
 if __name__ == "__main__":

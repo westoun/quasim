@@ -6,7 +6,7 @@ from pprint import pprint
 from random import choice, randint, sample, random
 from typing import List, Tuple
 
-from quasimp import QuaSimP, Circuit
+from quasimp2 import QuaSimP2 as QuaSimP, Circuit
 
 from qiskit import QuantumCircuit, Aer
 

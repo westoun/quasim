@@ -4,8 +4,8 @@ import numpy as np
 from random import choice, randint, sample, random
 from typing import List, Tuple
 
-from quasimp import QuaSimP, Circuit
-from quasimp.gates import (
+from quasimp2 import QuaSimP2 as QuaSimP, Circuit
+from quasimp2.gates import (
     CH,
     CRZ,
     CRX,
@@ -147,14 +147,14 @@ def create_random_circuits(
                 range(0, qubit_num), 3
             )
             qiskit_circuit.ccx(control_qubit1, control_qubit2, target_qubit)
-            quasimp_circuit.apply(CCX([control_qubit1, control_qubit2], target_qubit))
+            quasimp_circuit.apply(CCX(control_qubit1, control_qubit2, target_qubit))
 
         elif gate_type == "CCZ":
             target_qubit, control_qubit1, control_qubit2 = sample(
                 range(0, qubit_num), 3
             )
             qiskit_circuit.ccz(control_qubit1, control_qubit2, target_qubit)
-            quasimp_circuit.apply(CCZ([control_qubit1, control_qubit2], target_qubit))
+            quasimp_circuit.apply(CCZ(control_qubit1, control_qubit2, target_qubit))
 
         elif gate_type == "PHASE":
             target_qubit = randint(0, qubit_num - 1)
