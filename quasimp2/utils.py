@@ -1,8 +1,16 @@
 #!/usr/bin/env python3
 
+from dataclasses import dataclass
 import math
 import numpy as np
+from typing import List
 import warnings
+
+
+@dataclass
+class QubitGroup:
+    qubits: List[int]
+    state: np.ndarray
 
 
 def probabilities_from_state(state: np.ndarray) -> np.ndarray:
@@ -33,8 +41,8 @@ def probability_dict_from_state(state: np.ndarray) -> np.ndarray:
 
         remainder = i
         for j in reversed(range(qubit_num)):
-            
-            if remainder >= 2 ** j:
+
+            if remainder >= 2**j:
                 state += "1"
                 remainder -= 2**j
             else:
