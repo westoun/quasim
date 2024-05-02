@@ -6,7 +6,7 @@ from pprint import pprint
 from random import choice, randint, sample, random
 from typing import List, Tuple
 
-from quasimp2 import QuaSimP2 as QuaSimP, Circuit
+from quasim import QuaSim, Circuit
 
 from qiskit import QuantumCircuit, Aer
 
@@ -23,7 +23,7 @@ def run_time_benchmark():
     QUBIT_NUM = 3
 
     qiskit_backend = Aer.get_backend("statevector_simulator")
-    quasimp_simulator = QuaSimP()
+    quasimp_simulator = QuaSim()
 
     qiskit_circuits = []
     quasimp_circuits = []

@@ -157,7 +157,7 @@ def get_sorted_state(qubit_group: QubitGroup) -> np.ndarray:
     return sorted_state
 
 
-class QuaSimP2:
+class QuaSim:
     def __init__(self) -> None:
         pass
 

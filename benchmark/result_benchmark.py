@@ -6,7 +6,7 @@ from pprint import pprint
 from scipy.spatial import distance
 from typing import List, Tuple
 
-from quasimp2 import QuaSimP2 as QuaSimP, Circuit
+from quasim import QuaSim, Circuit
 
 from qiskit import QuantumCircuit, Aer
 
@@ -23,7 +23,7 @@ def run_result_benchmark():
     QUBIT_NUM = 4
 
     qiskit_backend = Aer.get_backend("statevector_simulator")
-    quasimp_simulator = QuaSimP()
+    quasimp_simulator = QuaSim()
 
     for _ in range(CIRCUIT_COUNT):
         qiskit_circuit, quasimp_circuit = create_random_circuits(

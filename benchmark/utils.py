@@ -4,8 +4,8 @@ import numpy as np
 from random import choice, randint, sample, random
 from typing import List, Tuple
 
-from quasimp2 import QuaSimP2 as QuaSimP, Circuit
-from quasimp2.gates import (
+from quasim import QuaSim as QuaSimP, Circuit
+from quasim.gates import (
     CH,
     CRZ,
     CRX,
