@@ -16,6 +16,9 @@ class QubitGroup:
     qubits: List[int]
     state: np.ndarray
 
+    def __hash__(self) -> int:
+        qubit_string = ",".join([str(qubit) for qubit in self.qubits])
+        return hash(qubit_string)
 
 def probabilities_from_state(state: np.ndarray) -> np.ndarray:
     """Returns the probabilities corresponding to a quantum

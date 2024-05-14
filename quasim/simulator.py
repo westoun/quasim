@@ -39,8 +39,22 @@ def initialize_qubit_groups(qubit_num: int) -> List[QubitGroup]:
     return qubit_groups
 
 
+def select_affected_qubit_group(
+    qubit_groups: List[QubitGroup], qubit_id: int
+) -> QubitGroup:
+    """Select the qubit group whose qubit id
+    is affected by the specified gate.
+    """
+
+    for qubit_group in qubit_groups:
+        if qubit_id in qubit_group.qubits:
+            return qubit_group
+
+    raise ValueError(f"No matching qubit group found for qubit '{qubit_id}'")
+
+
 def select_affected_qubit_groups(
-    qubit_groups: List[QubitGroup], gate: IGate
+    qubit_groups: List[QubitGroup], qubit_ids: List[int]
 ) -> List[QubitGroup]:
     """Select the subset of qubit groups whose qubit ids
     are affected by the specified gate.
@@ -49,7 +63,7 @@ def select_affected_qubit_groups(
     relevant_qubit_groups: List[QubitGroup] = []
     for qubit_group in qubit_groups:
         for qubit in qubit_group.qubits:
-            if qubit in gate.qubits:
+            if qubit in qubit_ids:
                 if qubit_group not in relevant_qubit_groups:
                     relevant_qubit_groups.append(qubit_group)
 
@@ -65,6 +79,10 @@ def merge_qubit_groups(
     and remove the previous qubit groups from the list of all qubit groups.
     The removal happens in place, while the merged qubit group is returned.
     """
+
+    # remove duplicates
+    relevant_groups = list(set(relevant_groups))
+
     merged_qubit_group = relevant_groups[0]
     for qubit_group in relevant_groups[1:]:
         merged_qubit_group.qubits.extend(qubit_group.qubits)
@@ -157,6 +175,20 @@ def get_sorted_state(qubit_group: QubitGroup) -> np.ndarray:
     return sorted_state
 
 
+def is_in_ket0(qubit_group: QubitGroup) -> bool:
+    if len(qubit_group.qubits) != 1:
+        raise NotImplementedError()
+
+    return qubit_group.state.tolist()[0] == 1
+
+
+def is_in_ket1(qubit_group: QubitGroup) -> bool:
+    if len(qubit_group.qubits) != 1:
+        raise NotImplementedError()
+
+    return qubit_group.state.tolist()[1] == 1
+
+
 class QuaSim:
     """Quantum circuit simulator used to evaluate quantum
     circuits.
@@ -186,22 +218,212 @@ class QuaSim:
                 apply_swap_gate(qubit_groups, gate)
                 continue
 
-            relevant_qubit_groups: List[QubitGroup] = select_affected_qubit_groups(
-                qubit_groups, gate
-            )
-
-            relevant_qubit_group = merge_qubit_groups(
-                relevant_groups=relevant_qubit_groups, total_groups=qubit_groups
-            )
-
             if issubclass(gate.__class__, Gate):
-                apply_gate(relevant_qubit_group, gate)
+                target_qubit_group = select_affected_qubit_group(
+                    qubit_groups, qubit_id=gate.target_qubit
+                )
+
+                apply_gate(target_qubit_group, gate)
 
             elif issubclass(gate.__class__, CGate):
-                apply_cgate(relevant_qubit_group, gate)
+                control_qubit_group = select_affected_qubit_group(
+                    qubit_groups, qubit_id=gate.control_qubit
+                )
+                target_qubit_group = select_affected_qubit_group(
+                    qubit_groups, qubit_id=gate.target_qubit
+                )
+
+                if len(control_qubit_group.qubits) == 1:
+                    # Conrol qubit is inactive
+                    if is_in_ket0(control_qubit_group):
+                        pass
+                    # Control qubit is active
+                    elif is_in_ket1(control_qubit_group):
+                        apply_gate(target_qubit_group, gate)
+                    # Control qubit is in superposition state
+                    else:
+                        merged_qubit_group = merge_qubit_groups(
+                            relevant_groups=[control_qubit_group, target_qubit_group],
+                            total_groups=qubit_groups,
+                        )
+                        apply_cgate(merged_qubit_group, gate)
+
+                else:
+                    merged_qubit_group = merge_qubit_groups(
+                        relevant_groups=[control_qubit_group, target_qubit_group],
+                        total_groups=qubit_groups,
+                    )
+                    apply_cgate(merged_qubit_group, gate)
 
             elif issubclass(gate.__class__, CCGate):
-                apply_ccgate(relevant_qubit_group, gate)
+                control_qubit1_group = select_affected_qubit_group(
+                    qubit_groups, qubit_id=gate.control_qubit1
+                )
+                control_qubit2_group = select_affected_qubit_group(
+                    qubit_groups, qubit_id=gate.control_qubit2
+                )
+                target_qubit_group = select_affected_qubit_group(
+                    qubit_groups, qubit_id=gate.target_qubit
+                )
+
+                if (
+                    len(control_qubit1_group.qubits) == 1
+                    and len(control_qubit2_group.qubits) == 1
+                ):
+
+                    # Control qubit 1 is inactive
+                    if is_in_ket0(control_qubit1_group):
+                        pass
+
+                    # Control qubit 1 is active
+                    elif is_in_ket1(control_qubit1_group):
+
+                        # Control qubit 2 is inactive
+                        if is_in_ket0(control_qubit2_group):
+                            pass
+
+                        # Control qubit 2 is active
+                        elif is_in_ket1(control_qubit2_group):
+                            apply_gate(target_qubit_group, gate)
+
+                        # Control qubit 2 is in superposition
+                        else:
+                            equivalent_cgate = CGate(
+                                control_qubit=gate.control_qubit2,
+                                target_qubit=gate.target_qubit,
+                            )
+                            equivalent_cgate.matrix = gate.matrix
+
+                            merged_qubit_group = merge_qubit_groups(
+                                relevant_groups=[
+                                    control_qubit2_group,
+                                    target_qubit_group,
+                                ],
+                                total_groups=qubit_groups,
+                            )
+                            apply_cgate(merged_qubit_group, equivalent_cgate)
+
+                    # Control qubit 1 is in superposition
+                    else:
+
+                        # Control qubit 2 is inactive
+                        if is_in_ket0(control_qubit2_group):
+                            pass
+
+                        # Control qubit 2 is active
+                        elif is_in_ket1(control_qubit2_group):
+                            equivalent_cgate = CGate(
+                                control_qubit=gate.control_qubit1,
+                                target_qubit=gate.target_qubit,
+                            )
+                            equivalent_cgate.matrix = gate.matrix
+
+                            merged_qubit_group = merge_qubit_groups(
+                                relevant_groups=[
+                                    control_qubit1_group,
+                                    target_qubit_group,
+                                ],
+                                total_groups=qubit_groups,
+                            )
+                            apply_cgate(merged_qubit_group, equivalent_cgate)
+
+                        # Control qubit 2 is in superposition
+                        else:
+                            merged_qubit_group = merge_qubit_groups(
+                                relevant_groups=[
+                                    control_qubit1_group,
+                                    control_qubit2_group,
+                                    target_qubit_group,
+                                ],
+                                total_groups=qubit_groups,
+                            )
+                            apply_ccgate(merged_qubit_group, gate)
+
+                elif (
+                    len(control_qubit1_group.qubits) == 1
+                ):  # and control qubit 2 group contains multiple qubits
+
+                    # Control qubit 1 is inactive
+                    if is_in_ket0(control_qubit1_group):
+                        pass
+
+                    # Control qubit 1 is active
+                    elif is_in_ket1(control_qubit1_group):
+                        equivalent_cgate = CGate(
+                            control_qubit=gate.control_qubit2,
+                            target_qubit=gate.target_qubit,
+                        )
+                        equivalent_cgate.matrix = gate.matrix
+
+                        merged_qubit_group = merge_qubit_groups(
+                            relevant_groups=[
+                                control_qubit2_group,
+                                target_qubit_group,
+                            ],
+                            total_groups=qubit_groups,
+                        )
+                        apply_cgate(merged_qubit_group, equivalent_cgate)
+
+                    # Control qubit 1 is in superposition
+                    else:
+                        merged_qubit_group = merge_qubit_groups(
+                            relevant_groups=[
+                                control_qubit1_group,
+                                control_qubit2_group,
+                                target_qubit_group,
+                            ],
+                            total_groups=qubit_groups,
+                        )
+                        apply_ccgate(merged_qubit_group, gate)
+
+                elif (
+                    len(control_qubit2_group.qubits) == 1
+                ):  # and control qubit 1 group contains multiple qubits
+
+                    # Control qubit 2 is inactive
+                    if is_in_ket0(control_qubit2_group):
+                        pass
+
+                    # Control qubit 2 is active
+                    elif is_in_ket1(control_qubit2_group):
+                        equivalent_cgate = CGate(
+                            control_qubit=gate.control_qubit1,
+                            target_qubit=gate.target_qubit,
+                        )
+                        equivalent_cgate.matrix = gate.matrix
+
+                        merged_qubit_group = merge_qubit_groups(
+                            relevant_groups=[
+                                control_qubit1_group,
+                                target_qubit_group,
+                            ],
+                            total_groups=qubit_groups,
+                        )
+                        apply_cgate(merged_qubit_group, equivalent_cgate)
+
+                    # Control qubit 2 is in superposition
+                    else:
+                        merged_qubit_group = merge_qubit_groups(
+                            relevant_groups=[
+                                control_qubit1_group,
+                                control_qubit2_group,
+                                target_qubit_group,
+                            ],
+                            total_groups=qubit_groups,
+                        )
+                        apply_ccgate(merged_qubit_group, gate)
+
+                # both qubit groups contain more than 1 qubit
+                else:
+                    merged_qubit_group = merge_qubit_groups(
+                        relevant_groups=[
+                            control_qubit1_group,
+                            control_qubit2_group,
+                            target_qubit_group,
+                        ],
+                        total_groups=qubit_groups,
+                    )
+                    apply_ccgate(merged_qubit_group, gate)
 
             else:
                 raise NotImplementedError(
