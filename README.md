@@ -7,14 +7,14 @@ For my master thesis, I required a quantum circuit simulator that was easy
 to set up, had low overhead, and was comparatively faster than [Qiskit](https://www.ibm.com/quantum/qiskit)
 on the amount of qubits that my experiments required.
 
-| qubit_num\simulator | qiskit 0.45.1 | quasim 0.1.0 |
-| :-----------------: | -------------:| ------------:|
-| 3                   | 15.06s        | 3.15s        | 
-| 4                   | 15.20s        | 4.43s        | 
-| 5                   | 15.06s        | 5.03s        | 
-| 6                   | 14.16s        | 7.76s        | 
-| 7                   | 14.36s        | 13.60s       | 
-| 8                   | 15.28s        | 30.61s       | 
+| qubit_num\simulator | qiskit 0.45.1 | quasim 0.1.0 | quasim 0.2.0 |
+| :-----------------: | -------------:| ------------:| ------------:|
+| 3                   | 15.06s        | 3.15s        | 2.71s        | 
+| 4                   | 15.20s        | 4.43s        | 3.83s        | 
+| 5                   | 15.06s        | 5.03s        | 3.76s        | 
+| 6                   | 14.16s        | 7.76s        | 4.69s        | 
+| 7                   | 14.36s        | 13.60s       | 6.32s        | 
+| 8                   | 15.28s        | 30.61s       | 8.75s        | 
 
 
 **Table 1:** Execution time on 1000 randomly generated circuits with 40 gates each.
