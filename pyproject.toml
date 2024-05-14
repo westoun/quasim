@@ -9,7 +9,7 @@ include = ["quasim", "quasim.gates"]
 
 [project]
 name = "quasim"
-version = "0.1.0"
+version = "0.2.0"
 description = "Efficient simulation of quantum computing circuits."
 readme = "README.md"
 authors = [{ name = "Christoph Stein"}]
