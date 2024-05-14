@@ -7,6 +7,18 @@ For my master thesis, I required a quantum circuit simulator that was easy
 to set up, had low overhead, and was comparatively faster than [Qiskit](https://www.ibm.com/quantum/qiskit)
 on the amount of qubits that my experiments required.
 
+| qubit_num\simulator | qiskit 0.45.1 | quasim 0.1.0 |
+| :-----------------: | -------------:| ------------:|
+| 3                   | 15.06s        | 3.15s        | 
+| 4                   | 15.20s        | 4.43s        | 
+| 5                   | 15.06s        | 5.03s        | 
+| 6                   | 14.16s        | 7.76s        | 
+| 7                   | 14.36s        | 13.60s       | 
+| 8                   | 15.28s        | 30.61s       | 
+
+
+**Table 1:** Execution time on 1000 randomly generated circuits with 40 gates each.
+
 Aside from a low degree of overhead and dependencies (numpy only), QuaSim's speed gain
 comes down to the way it detects and handles entanglement, since entanglement is the
 reason why quantum circuits experience exponential resource growth when simulated

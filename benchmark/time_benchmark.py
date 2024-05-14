@@ -17,19 +17,16 @@ from .utils import (
 )
 
 
-def run_time_benchmark():
-    CIRCUIT_COUNT = 1000
-    GATE_COUNT = 40
-    QUBIT_NUM = 3
+def run_time_benchmark(circuit_count=1000, gate_count=40, qubit_num=3):
 
     qiskit_backend = Aer.get_backend("statevector_simulator")
     quasimp_simulator = QuaSim()
 
     qiskit_circuits = []
     quasimp_circuits = []
-    for _ in range(CIRCUIT_COUNT):
+    for _ in range(circuit_count):
         qiskit_circuit, quasimp_circuit = create_random_circuits(
-            gate_count=GATE_COUNT, qubit_num=QUBIT_NUM
+            gate_count=gate_count, qubit_num=qubit_num
         )
         qiskit_circuits.append(qiskit_circuit)
         quasimp_circuits.append(quasimp_circuit)
@@ -49,7 +46,7 @@ def run_time_benchmark():
     quasimp_duration = end - start
 
     print(
-        f"Finished evaluation benchmarking on {CIRCUIT_COUNT} circuits with {GATE_COUNT} gates and {QUBIT_NUM} qubits each."
+        f"Finished evaluation benchmarking on {circuit_count} circuits with {gate_count} gates and {qubit_num} qubits each."
     )
     print("Qiskit duration: ", qiskit_duration)
     print("Quasimp duration: ", quasimp_duration)

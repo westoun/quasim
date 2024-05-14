@@ -17,17 +17,14 @@ from .utils import (
 )
 
 
-def run_result_benchmark():
-    CIRCUIT_COUNT = 100
-    GATE_COUNT = 40
-    QUBIT_NUM = 4
+def run_result_benchmark(circuit_count=100, gate_count=40, qubit_num=4):
 
     qiskit_backend = Aer.get_backend("statevector_simulator")
     quasimp_simulator = QuaSim()
 
-    for _ in range(CIRCUIT_COUNT):
+    for _ in range(circuit_count):
         qiskit_circuit, quasimp_circuit = create_random_circuits(
-            gate_count=GATE_COUNT, qubit_num=QUBIT_NUM
+            gate_count=gate_count, qubit_num=qubit_num
         )
 
         qiskit_probabilities = evaluate_qiskit_circuits(
@@ -44,7 +41,7 @@ def run_result_benchmark():
             print(f"\t{quasimp_circuit}")
             print(qiskit_probabilities)
             print(quasimp_probabilities)
-            break 
+            break
 
     else:
         print(
