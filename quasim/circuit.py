@@ -5,7 +5,11 @@ from typing import List, Union, Dict
 
 from .gates import IGate, Swap, Gate, CGate, CCGate, CX
 from .gates._matrices import X_MATRIX
-from .utils import probabilities_from_state, probability_dict_from_state
+from .utils import (
+    probabilities_from_state,
+    probability_dict_from_state,
+    state_dict_from_state,
+)
 from .gates.utils import (
     create_double_controlled_matrix,
     create_controlled_matrix,
@@ -25,6 +29,7 @@ class Circuit:
     _state: np.ndarray = None
     _probabilities: np.ndarray = None
     _probability_dict: Dict = None
+    _state_dict: Dict = None
 
     def __init__(self, qubit_num: int) -> None:
         self.gates = []
@@ -89,6 +94,26 @@ class Circuit:
         else:
             self._probability_dict = probability_dict_from_state(self.state)
             return self._probability_dict
+
+    @property
+    def state_dict(self) -> Union[Dict, None]:
+        """Returns a dictionary of the state coefficients
+        corresponding to the state of the circuit after all
+        quantum gates have been applied. States with a
+        probability of 0 are omitted.
+
+        If the circuit has not been evaluated by the
+        simulator, None is returned.
+        """
+
+        if self._state is None:
+            return None
+
+        if self._state_dict is not None:
+            return self._state_dict
+        else:
+            self._state_dict = state_dict_from_state(self.state)
+            return self._state_dict
 
     def __repr__(self) -> str:
         return f"[{', '.join([str(gate) for gate in self.gates])}]"
