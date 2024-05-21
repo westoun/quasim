@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
 
-from quasim import QuaSim, Circuit
+from quasim import QuaSim, Circuit, get_unitary
 from quasim.gates import H, CX, X
 
 
 if __name__ == "__main__":
-    circuit = Circuit(3)
+    circuit = Circuit(2)
     circuit.apply(H(0))
     circuit.apply(CX(0, 1))
 

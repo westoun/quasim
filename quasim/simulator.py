@@ -80,7 +80,7 @@ class QuaSim:
                 self._apply_swap_gate(qubit_groups, gate)
                 continue
 
-            if issubclass(gate.__class__, Gate):
+            elif issubclass(gate.__class__, Gate):
                 self._apply_gate(qubit_groups, gate)
 
             elif issubclass(gate.__class__, CGate):
