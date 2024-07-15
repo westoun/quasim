@@ -9,6 +9,8 @@ from ._matrices import (
     X_MATRIX,
     Y_MATRIX,
     Z_MATRIX,
+    S_MATRIX,
+    T_MATRIX,
     RX_MATRIX,
     RY_MATRIX,
     RZ_MATRIX,
@@ -32,6 +34,21 @@ class Gate(IGate):
     def __repr__(self) -> str:
         gate_name = str(type(self)).split(".")[-1].replace("'>", "")
         return f"{gate_name}(target={self.target_qubit})"
+
+
+class S(Gate):
+    """S gate.
+
+    Introduces a phase of pi/2."""
+
+    matrix: np.ndarray = S_MATRIX
+
+class T(Gate):
+    """T gate.
+
+    Introduces a phase of pi/4."""
+
+    matrix: np.ndarray = T_MATRIX
 
 
 class H(Gate):

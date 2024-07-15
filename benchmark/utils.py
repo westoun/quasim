@@ -24,6 +24,10 @@ from quasim.gates import (
     CCZ,
     Phase,
     Swap,
+    S,
+    CS,
+    T,
+    CPhase,
 )
 
 from qiskit import QuantumCircuit, Aer
@@ -48,6 +52,10 @@ GATES = [
     "CCZ",
     "PHASE",
     "SWAP",
+    "S",
+    "T",
+    "CS",
+    "CPhase",
 ]
 
 
@@ -79,6 +87,21 @@ def create_random_circuits(
             target_qubit = randint(0, qubit_num - 1)
             qiskit_circuit.z(target_qubit)
             quasimp_circuit.apply(Z(target_qubit))
+
+        elif gate_type == "S":
+            target_qubit = randint(0, qubit_num - 1)
+            qiskit_circuit.s(target_qubit)
+            quasimp_circuit.apply(S(target_qubit))
+
+        elif gate_type == "T":
+            target_qubit = randint(0, qubit_num - 1)
+            qiskit_circuit.t(target_qubit)
+            quasimp_circuit.apply(T(target_qubit))
+
+        elif gate_type == "CS":
+            target_qubit, control_qubit = sample(range(0, qubit_num), 2)
+            qiskit_circuit.cs(control_qubit, target_qubit)
+            quasimp_circuit.apply(CS(control_qubit, target_qubit))
 
         elif gate_type == "CH":
             target_qubit, control_qubit = sample(range(0, qubit_num), 2)
@@ -134,6 +157,13 @@ def create_random_circuits(
 
             qiskit_circuit.cry(theta, control_qubit, target_qubit)
             quasimp_circuit.apply(CRY(control_qubit, target_qubit, theta))
+
+        elif gate_type == "CPhase":
+            target_qubit, control_qubit = sample(range(0, qubit_num), 2)
+            theta = random() * 2 * np.pi - np.pi
+
+            qiskit_circuit.cp(theta, control_qubit, target_qubit)
+            quasimp_circuit.apply(CPhase(control_qubit, target_qubit, theta))
 
         elif gate_type == "CRZ":
             target_qubit, control_qubit = sample(range(0, qubit_num), 2)

@@ -8,6 +8,7 @@ from ._matrices import (
     H_MATRIX,
     X_MATRIX,
     Y_MATRIX,
+    S_MATRIX,
     Z_MATRIX,
     RX_MATRIX,
     RY_MATRIX,
@@ -44,6 +45,17 @@ class CH(CGate):
     """
 
     matrix: np.ndarray = H_MATRIX
+
+
+class CS(CGate):
+    """Controlled S gate.
+
+    Applies the S gate to the target_qubit
+    if the control_qubit is in a state of |1>.
+    The S gate induces a phase of pi/2.
+    """
+
+    matrix: np.ndarray = S_MATRIX
 
 
 class CX(CGate):
@@ -136,6 +148,27 @@ class CRZ(CGate):
         self.target_qubit = target_qubit
         self.theta = theta
         self.matrix = RZ_MATRIX(theta)
+
+    def __repr__(self) -> str:
+        gate_name = str(type(self)).split(".")[-1].replace("'>", "")
+        return f"{gate_name}(control={self.control_qubit}, target={self.target_qubit}, theta={round(self.theta, 3)})"
+
+
+class CPhase(CGate):
+    """Controlled Phase gate.
+
+    Applies the phase gate to the target_qubit
+    if the control_qubit is in a state of |1>.
+    """
+
+    matrix: np.ndarray
+    theta: float
+
+    def __init__(self, control_qubit: int, target_qubit: int, theta: float) -> None:
+        self.control_qubit = control_qubit
+        self.target_qubit = target_qubit
+        self.theta = theta
+        self.matrix = PHASE_MATRIX(theta)
 
     def __repr__(self) -> str:
         gate_name = str(type(self)).split(".")[-1].replace("'>", "")
