@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0] - 2024-07-14
+
+- add S, T, Controlled-S, and Controlled-Phase gate.
+
 ## [0.2.1] - 2024-07-14
 
 - remove unneeded qiskit-terra dependency.
