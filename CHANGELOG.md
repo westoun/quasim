@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.1] - 2024-07-14
+
+- remove unneeded qiskit-terra dependency.
+
 ## [0.2.0] - 2024-05-14
 
 - adjust simulation code to simplify controlled gates if control qubits are either inactive (|s> = |0>) or active, but not in a superposition state (|s> = |1>).
